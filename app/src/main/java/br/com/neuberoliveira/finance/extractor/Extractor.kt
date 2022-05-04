@@ -7,6 +7,7 @@ enum class TransactionType {
     CREDIT,
     DEBIT,
     PIX,
+    TRANSFER,
 }
 enum class TransactionDestination {
     IN, // dinheiro entrando

@@ -4,10 +4,6 @@ import br.com.neuberoliveira.finance.extractor.TransactionDestination
 import br.com.neuberoliveira.finance.extractor.TransactionType
 import org.junit.Assert.*
 import org.junit.Test
-import java.time.Clock
-import java.time.Instant
-import java.time.ZoneId
-
 
 class TestC6Extractor {
     @Test
@@ -66,5 +62,17 @@ class TestC6Extractor {
         assertTrue(extactor.date != "")
         assertEquals(TransactionType.PIX, extactor.type)
         assertEquals(TransactionDestination.IN, extactor.destination)
+    }
+
+    @Test
+    fun withdraw() {
+        val extactor = C6Extractor("Saque realizado", "Saque realizado no valor de R$ 123,45 em 01/01/2022 as 00:00 com o cartão final 1234 no caixa eletrônico NOME CAIXA")
+        extactor.parse()
+
+        assertTrue(extactor.isValid())
+        assertEquals("123,45", extactor.amount)
+        assertEquals("01/01/2022", extactor.date)
+        assertEquals(TransactionType.TRANSFER, extactor.type)
+        assertEquals(TransactionDestination.OUT, extactor.destination)
     }
 }

@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import br.com.neuberoliveira.finance.R
+import br.com.neuberoliveira.finance.extractor.TransactionDestination
+import br.com.neuberoliveira.finance.extractor.TransactionType
 import br.com.neuberoliveira.finance.model.database.getDatabase
 import br.com.neuberoliveira.finance.model.entity.TransactionEntity
 
@@ -60,6 +62,8 @@ class CustomAdapter(private val dataSet: List<TransactionEntity>) :
         val appName: TextView
         val date: TextView
         val amount: TextView
+        val type: TextView
+        val destination: TextView
 
         init {
             // Define click listener for the ViewHolder's View.
@@ -68,6 +72,8 @@ class CustomAdapter(private val dataSet: List<TransactionEntity>) :
             appName = view.findViewById(R.id.appname)
             date = view.findViewById(R.id.date)
             amount = view.findViewById(R.id.amount)
+            type = view.findViewById(R.id.type)
+            destination = view.findViewById(R.id.destination)
         }
     }
 
@@ -80,6 +86,24 @@ class CustomAdapter(private val dataSet: List<TransactionEntity>) :
         return ViewHolder(view)
     }
 
+    fun translateType(type: TransactionType?):String {
+        return when(type){
+            TransactionType.CREDIT -> "CRE"
+            TransactionType.DEBIT -> "DEB"
+            TransactionType.PIX -> "PIX"
+            TransactionType.TRANSFER -> "TRA"
+            else->"???"
+        }
+    }
+
+    fun translateDestination(type: TransactionDestination?):String {
+        return when(type){
+            TransactionDestination.IN -> "ENT"
+            TransactionDestination.OUT -> "SAI"
+            else->"???"
+        }
+    }
+
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         // Get element from your dataset at this position and replace the
@@ -89,6 +113,8 @@ class CustomAdapter(private val dataSet: List<TransactionEntity>) :
         viewHolder.appName.text = dataSet[position].appName
         viewHolder.date.text = dataSet[position].date
         viewHolder.amount.text = dataSet[position].amount
+        viewHolder.type.text = translateType(dataSet[position].type)
+        viewHolder.destination.text = translateDestination(dataSet[position].destination)
     }
 
     // Return the size of your dataset (invoked by the layout manager)
