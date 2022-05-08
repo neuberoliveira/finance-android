@@ -42,16 +42,22 @@ class C6Extractor(title:String?, text:String?) : Extractor(title, text) {
     private fun extractDestination():TransactionDestination{
         return when(type){
             TransactionType.PIX -> {
+                var dest:TransactionDestination
                 if(getTitle().contains("pix recebida") && getText().contains("você recebeu um pix") ){
-                    TransactionDestination.IN
+                    dest = TransactionDestination.IN
+                }else{
+                    dest = TransactionDestination.OUT
                 }
-                TransactionDestination.OUT
+                return dest
             }
             TransactionType.TRANSFER -> {
+                var dest:TransactionDestination
                 if(getTitle().contains("recebido") ){
-                    TransactionDestination.IN
+                    dest = TransactionDestination.IN
+                }else{
+                    dest = TransactionDestination.OUT
                 }
-                TransactionDestination.OUT
+                return dest
             }
             else -> TransactionDestination.OUT
         }
