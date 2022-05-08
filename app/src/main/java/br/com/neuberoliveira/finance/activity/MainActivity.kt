@@ -2,7 +2,7 @@ package br.com.neuberoliveira.finance.activity
 
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
@@ -17,33 +17,36 @@ import br.com.neuberoliveira.finance.model.database.getDatabase
 import br.com.neuberoliveira.finance.model.entity.TransactionEntity
 
 class MainActivity : Activity() {
-    lateinit var transactions:List<TransactionEntity>
-
+    lateinit var transactions: List<TransactionEntity>
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         transactions = getDatabase(this).transactionDao().getAll()
-        println("Transactions SIZE: ${transactions.size}")
-
+        
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
         val transactionAdapter = CustomAdapter(transactions)
         recyclerView.adapter = transactionAdapter
-
-        if(!isNotificationAccessEnabled()){
+        
+        if (!isNotificationAccessEnabled()) {
             openNotificationSettings()
         }
+        
+        var prefs: SharedPreferences =
+            applicationContext.getSharedPreferences("finance-prefs", MODE_PRIVATE)
     }
-
-    fun isNotificationAccessEnabled() : Boolean {
-        val enabledNotifications = Settings.Secure.getString(contentResolver,"enabled_notification_listeners")
+    
+    fun isNotificationAccessEnabled(): Boolean {
+        val enabledNotifications =
+            Settings.Secure.getString(contentResolver, "enabled_notification_listeners")
         val enabled = enabledNotifications.contains(
             this.packageName
         )
-
+        
         return enabled
     }
-
-    fun openNotificationSettings(){
+    
+    fun openNotificationSettings() {
         startActivity(Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"))
     }
 }
@@ -51,7 +54,7 @@ class MainActivity : Activity() {
 
 class CustomAdapter(private val dataSet: List<TransactionEntity>) :
     RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
-
+    
     /**
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder).
@@ -64,7 +67,7 @@ class CustomAdapter(private val dataSet: List<TransactionEntity>) :
         val amount: TextView
         val type: TextView
         val destination: TextView
-
+        
         init {
             // Define click listener for the ViewHolder's View.
             title = view.findViewById(R.id.title)
@@ -76,34 +79,34 @@ class CustomAdapter(private val dataSet: List<TransactionEntity>) :
             destination = view.findViewById(R.id.destination)
         }
     }
-
+    
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(viewGroup.context)
             .inflate(R.layout.transaction_item, viewGroup, false)
-
+        
         return ViewHolder(view)
     }
-
-    fun translateType(type: TransactionType?):String {
-        return when(type){
+    
+    fun translateType(type: TransactionType?): String {
+        return when (type) {
             TransactionType.CREDIT -> "CRE"
             TransactionType.DEBIT -> "DEB"
             TransactionType.PIX -> "PIX"
             TransactionType.TRANSFER -> "TRA"
-            else->"???"
+            else -> "???"
         }
     }
-
-    fun translateDestination(type: TransactionDestination?):String {
-        return when(type){
+    
+    fun translateDestination(type: TransactionDestination?): String {
+        return when (type) {
             TransactionDestination.IN -> "ENT"
             TransactionDestination.OUT -> "SAI"
-            else->"???"
+            else -> "???"
         }
     }
-
+    
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         // Get element from your dataset at this position and replace the
@@ -116,8 +119,8 @@ class CustomAdapter(private val dataSet: List<TransactionEntity>) :
         viewHolder.type.text = translateType(dataSet[position].type)
         viewHolder.destination.text = translateDestination(dataSet[position].destination)
     }
-
+    
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = dataSet.size
-
+    
 }
