@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 
 class Preferences(ctx: Context) {
   val NAME: String = "finance-prefs"
-  val KEY_TOKEN: String = "token"
+  val KEY_TOKEN: String = "auth"
   val context: Context = ctx
   val prefs: SharedPreferences = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)
   
@@ -24,5 +24,9 @@ class Preferences(ctx: Context) {
   
   fun setToken(token: String) {
     prefs.edit().putString(KEY_TOKEN, token).apply()
+  }
+  
+  fun clear() {
+    prefs.edit().clear().apply()
   }
 }

@@ -31,7 +31,7 @@ class AuthenticationActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_authentication)
-    
+  
     loader = findViewById(R.id.loader)
     prefs = Preferences(applicationContext)
     queue = Volley.newRequestQueue(applicationContext)
@@ -43,13 +43,21 @@ class AuthenticationActivity : AppCompatActivity() {
     stopAuthPooling()
   }
   
+  override fun onResume() {
+    super.onResume()
+    if (status == Status.WAITING) {
+      startAuthPooling()
+    }
+  }
+  
   fun startAuth(view: View) {
     loader.visibility = View.VISIBLE
     startAuthPooling()
   }
   
-  fun stopAuth(token: String) {
-    prefs.setToken(token)
+  fun stopAuth(auth: String) {
+    println(auth)
+    prefs.setToken(auth)
     stopAuthPooling()
     finish()
   }
@@ -62,7 +70,7 @@ class AuthenticationActivity : AppCompatActivity() {
           run {
             if (statusCode == 200) {
               println("Auth pool - Received token")
-              stopAuth(response.getString("token"))
+              stopAuth(response.toString())
               this@AuthenticationActivity.status = Status.DONE
             } else if (statusCode == 404) {
               println("Auth pool - No token yet")
