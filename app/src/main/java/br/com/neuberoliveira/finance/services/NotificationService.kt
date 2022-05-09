@@ -3,7 +3,6 @@ package br.com.neuberoliveira.finance.services
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import br.com.neuberoliveira.finance.extractNotification
-import br.com.neuberoliveira.finance.inspectNotification
 import br.com.neuberoliveira.finance.model.database.getDatabase
 import br.com.neuberoliveira.finance.model.entity.TransactionEntity
 
@@ -39,7 +38,7 @@ class NotificationService : NotificationListenerService() {
     val entity: TransactionEntity
     
     if (sbn != null) {
-      inspectNotification(sbn)
+      // inspectNotification(sbn)
       val appId = sbn.packageName
       val extractor = extractNotification(sbn)
       

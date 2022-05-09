@@ -3,43 +3,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="br.com.neuberoliveira.finance">
 
-    <uses-permission
-        android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
-        tools:ignore="ProtectedPermissions" />
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission
+      android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+      tools:ignore="ProtectedPermissions" />
 
-    <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.Finance">
+  <application
+      android:allowBackup="true"
+      android:icon="@mipmap/ic_launcher"
+      android:label="@string/app_name"
+      android:roundIcon="@mipmap/ic_launcher_round"
+      android:supportsRtl="true"
+      android:theme="@style/Theme.Finance">
+    <activity
+        android:name=".activity.MainActivity"
+        android:exported="true">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
 
-        <activity
-            android:name=".activity.MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+    <activity
+        android:name=".activity.AuthenticationActivity"
+        android:exported="false" />
 
-        <service
-            android:name=".services.NotificationService"
-            android:exported="true"
-            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
-            <intent-filter>
-                <action android:name="android.service.notification.NotificationListenerService" />
-            </intent-filter>
+    <service
+        android:name=".services.NotificationService"
+        android:exported="true"
+        android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+      <intent-filter>
+        <action android:name="android.service.notification.NotificationListenerService" />
+      </intent-filter>
 
-            <meta-data
-                android:name="android.service.notification.default_filter_types"
-                android:value="conversations,alerting" />
-            <meta-data
-                android:name="android.service.notification.disabled_filter_types"
-                android:value="ongoing,silent" />
-        </service>
-    </application>
+      <meta-data
+          android:name="android.service.notification.default_filter_types"
+          android:value="conversations,alerting" />
+      <meta-data
+          android:name="android.service.notification.disabled_filter_types"
+          android:value="ongoing,silent" />
+    </service>
+  </application>
 
 </manifest>

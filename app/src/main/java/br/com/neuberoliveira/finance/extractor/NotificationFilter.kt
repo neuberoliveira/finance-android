@@ -26,12 +26,6 @@ fun getNotificationExtra(sbn: StatusBarNotification, key: String, default: Strin
 }
 
 fun inspectNotification(sbn: StatusBarNotification) {
-  /*
-      o que que eu preciso dos extras sao:
-          android.title
-          android.text
-          android.subText (talvez)
-   */
   var bundle = sbn.notification?.extras
   
   println("----------- ${sbn.id}:${sbn.packageName} -----------")
