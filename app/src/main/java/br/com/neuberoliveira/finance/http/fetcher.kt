@@ -23,3 +23,10 @@ fun fetcher(
     })
   queue.add(stringRequest)
 }
+
+fun hashToQueryString(params: HashMap<String, String>): String {
+  val query = mutableListOf<String>()
+  params.forEach { (key, value) -> query.add("$key=$value") }
+  
+  return query.joinToString("&")
+}
