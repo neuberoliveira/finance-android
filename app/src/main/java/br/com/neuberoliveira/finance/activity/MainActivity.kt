@@ -15,6 +15,11 @@ import br.com.neuberoliveira.finance.extractor.TransactionType
 import br.com.neuberoliveira.finance.model.database.getDatabase
 import br.com.neuberoliveira.finance.model.entity.TransactionEntity
 import br.com.neuberoliveira.finance.model.prefs.Preferences
+import br.com.neuberoliveira.finance.services.SheetsClient
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : Activity() {
   lateinit var transactions: List<TransactionEntity>
@@ -49,12 +54,24 @@ class MainActivity : Activity() {
     val enabled = enabledNotifications.contains(
       this.packageName
     )
-    
+  
     return enabled
   }
   
   fun openNotificationSettings() {
     startActivity(Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"))
+  }
+  
+  fun fetchTestData(view: View) {
+    val client = SheetsClient()
+    
+    GlobalScope.launch(Dispatchers.IO) {
+      client.authorize()
+      val data = client.getTestRange()
+      withContext(Dispatchers.Main) {
+        println(data)
+      }
+    }
   }
 }
 

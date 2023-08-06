@@ -1,3 +1,2 @@
-# URL pointing to server running https://github.com/neuberoliveira/finance-server
-# end with `/web/` attention to the slash (/) at the end
-BASE_AUTH_URL="FILL ME"
+GOOGLE_API_KEY="FILL ME"
+GOOGLE_SERVICE_ACCOUNT="FILL ME"

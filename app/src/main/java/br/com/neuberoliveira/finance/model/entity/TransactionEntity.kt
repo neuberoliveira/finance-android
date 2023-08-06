@@ -13,6 +13,7 @@ data class TransactionEntity(
     @ColumnInfo(name = "date") val date: String?,
     @ColumnInfo(name = "type") val type: TransactionType?,
     @ColumnInfo(name = "destination") val destination: TransactionDestination?,
+    @ColumnInfo(name = "sync") val sync: Boolean?,
     @ColumnInfo(name = "notification_title") val notificationTitle: String?,
     @ColumnInfo(name = "notification_text") val notificationText: String?,
     @ColumnInfo(name = "app_id") val appId: String?,

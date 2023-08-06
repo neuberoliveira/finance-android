@@ -7,10 +7,19 @@
     android:id="@+id/mainActivity"
     tools:context=".activity.MainActivity">
 
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="fetchTestData"
+        android:visibility="gone"
+        android:text="Button" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="visible"
         app:layoutManager="LinearLayoutManager"
         app:layout_anchor="@+id/recyclerView"
         app:layout_anchorGravity="start|top" />

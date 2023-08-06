@@ -65,6 +65,7 @@ class NotificationService : NotificationListenerService() {
           extractor.date,
           extractor.type,
           extractor.destination,
+          false,
           extractor.getTitle(),
           extractor.getText(),
           appId,
