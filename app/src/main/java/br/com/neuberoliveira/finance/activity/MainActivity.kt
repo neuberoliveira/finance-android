@@ -91,6 +91,7 @@ class CustomAdapter(private val dataSet: List<TransactionEntity>) :
     val amount: TextView
     val type: TextView
     val destination: TextView
+    val sync: TextView
     
     init {
       // Define click listener for the ViewHolder's View.
@@ -101,6 +102,7 @@ class CustomAdapter(private val dataSet: List<TransactionEntity>) :
       amount = view.findViewById(R.id.amount)
       type = view.findViewById(R.id.type)
       destination = view.findViewById(R.id.destination)
+      sync = view.findViewById(R.id.sync)
     }
   }
   
@@ -133,6 +135,12 @@ class CustomAdapter(private val dataSet: List<TransactionEntity>) :
   
   // Replace the contents of a view (invoked by the layout manager)
   override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+    var syncText = "N"
+    
+    if(dataSet[position].sync==true){
+      syncText = "S"
+    }
+    
     // Get element from your dataset at this position and replace the
     // contents of the view with that element
     viewHolder.title.text = dataSet[position].notificationTitle
@@ -142,6 +150,7 @@ class CustomAdapter(private val dataSet: List<TransactionEntity>) :
     viewHolder.amount.text = dataSet[position].amount
     viewHolder.type.text = translateType(dataSet[position].type)
     viewHolder.destination.text = translateDestination(dataSet[position].destination)
+    viewHolder.sync.text = syncText
   }
   
   // Return the size of your dataset (invoked by the layout manager)

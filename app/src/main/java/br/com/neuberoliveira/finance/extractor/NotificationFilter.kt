@@ -9,8 +9,14 @@ import br.com.neuberoliveira.finance.extractor.Extractor
 fun extractNotification(statusBarNotification: StatusBarNotification): Extractor {
   var title = getNotificationExtra(statusBarNotification, "android.title", "")
   var text = getNotificationExtra(statusBarNotification, "android.text", "")
+  var packageName = statusBarNotification.packageName
   
-  var extractor = when (statusBarNotification.packageName) {
+  if (BuildConfig.DEBUG) {
+    packageName = "com.c6bank.app"
+  }
+  
+  
+  var extractor = when (packageName) {
     "com.c6bank.app" -> C6Extractor(title, text)
     // "com.discord" -> EmptyExtractor(title, text)
     else -> EmptyExtractor(title, text)

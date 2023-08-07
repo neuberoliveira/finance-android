@@ -8,14 +8,14 @@ import br.com.neuberoliveira.finance.extractor.TransactionType
 
 @Entity(tableName = "transactions")
 data class TransactionEntity(
-    @PrimaryKey(autoGenerate = true) val uid: Int?,
-    @ColumnInfo(name = "amount") val amount: String?,
-    @ColumnInfo(name = "date") val date: String?,
-    @ColumnInfo(name = "type") val type: TransactionType?,
-    @ColumnInfo(name = "destination") val destination: TransactionDestination?,
-    @ColumnInfo(name = "sync") val sync: Boolean?,
-    @ColumnInfo(name = "notification_title") val notificationTitle: String?,
-    @ColumnInfo(name = "notification_text") val notificationText: String?,
-    @ColumnInfo(name = "app_id") val appId: String?,
-    @ColumnInfo(name = "app_name") val appName: String?,
+    @PrimaryKey(autoGenerate = true) var uid: Long?,
+    @ColumnInfo(name = "amount") var amount: String?,
+    @ColumnInfo(name = "date") var date: String?,
+    @ColumnInfo(name = "type") var type: TransactionType?,
+    @ColumnInfo(name = "destination") var destination: TransactionDestination?,
+    @ColumnInfo(name = "sync") var sync: Boolean?,
+    @ColumnInfo(name = "notification_title") var notificationTitle: String?,
+    @ColumnInfo(name = "notification_text") var notificationText: String?,
+    @ColumnInfo(name = "app_id") var appId: String?,
+    @ColumnInfo(name = "app_name") var appName: String?,
 )

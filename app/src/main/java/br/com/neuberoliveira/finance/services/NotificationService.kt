@@ -3,22 +3,19 @@ package br.com.neuberoliveira.finance.services
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import br.com.neuberoliveira.finance.extractNotification
-import br.com.neuberoliveira.finance.extractor.Extractor
-import br.com.neuberoliveira.finance.extractor.TransactionDestination
-import br.com.neuberoliveira.finance.extractor.TransactionType
-import br.com.neuberoliveira.finance.http.fetcher
-import br.com.neuberoliveira.finance.http.hashToQueryString
 import br.com.neuberoliveira.finance.model.database.getDatabase
 import br.com.neuberoliveira.finance.model.entity.TransactionEntity
 import br.com.neuberoliveira.finance.model.prefs.Preferences
-import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.Volley
-import org.json.JSONObject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class NotificationService : NotificationListenerService() {
   private lateinit var prefs: Preferences
   private lateinit var queue: RequestQueue
+  private lateinit var sheetClient: SheetsClient
   
   override fun onCreate() {
     super.onCreate()
@@ -26,6 +23,8 @@ class NotificationService : NotificationListenerService() {
     
     queue = Volley.newRequestQueue(applicationContext)
     prefs = Preferences(applicationContext)
+    sheetClient = SheetsClient()
+    sheetClient.authorize()
   }
   
   override fun onListenerConnected() {
@@ -71,43 +70,27 @@ class NotificationService : NotificationListenerService() {
           appId,
           extractor.getName(),
         )
-        getDatabase(applicationContext).transactionDao().add(entity)
-        println("Notification saved :wink:")
-  
-        syncServer(extractor)
+        syncServer(entity)
       }
     }
   }
   
-  private fun syncServer(extractor: Extractor) {
-    val endpoint = "append.php"
-    val params = HashMap<String, String>()
-    val isCredit = extractor.type == TransactionType.CREDIT
-    val type = if (isCredit) "credit" else "debit"
-    var amountSign = ""
-    
-    if (extractor.destination == TransactionDestination.OUT && !isCredit) {
-      amountSign = "-"
-    }
-    
-    params["type"] = type
-    params["amount"] = "${amountSign}${extractor.amount}"
-    params["description"] = ""
-    params["token"] = prefs.getToken()
-    
-    fetcher(
-      queue,
-      "${endpoint}?${hashToQueryString(params)}",
-      Request.Method.GET
-    ) { response: JSONObject, statusCode: Int ->
-      run {
-        if (statusCode == 200) {
-          println("Sync with success")
-        } else {
-          println("Ops! Failed on sync")
-          println(response.toString())
-        }
+  private fun syncServer(transaction: TransactionEntity) {
+    GlobalScope.launch(Dispatchers.IO) {
+      try{
+        sendToSheet(transaction)
+      }catch(e:Exception){
+        saveToDatabase(transaction)
       }
     }
+  }
+  
+  private fun sendToSheet(transaction: TransactionEntity){
+    sheetClient.append(transaction)
+    println("Sent to sheet")
+  }
+  
+  private fun saveToDatabase(transaction: TransactionEntity){
+    getDatabase(applicationContext).transactionDao().add(transaction)
   }
 }

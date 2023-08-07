@@ -3,6 +3,7 @@ package br.com.neuberoliveira.finance.model.entity.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import br.com.neuberoliveira.finance.model.entity.TransactionEntity
 
 @Dao
@@ -11,7 +12,13 @@ interface TransactionDao {
   fun getAll(): List<TransactionEntity>
   
   @Insert
-  fun add(transaction: TransactionEntity)
+  fun add(transaction: TransactionEntity): Long
+  
+  @Update
+  fun update(transaction: TransactionEntity)
+  
+  @Query("UPDATE transactions SET sync=:sync WHERE uid=:id")
+  fun updateSync(id: Long, sync:Boolean)
   
   /*@Query("SELECT * FROM user WHERE uid IN (:userIds)")
   fun loadAllByIds(userIds: IntArray): List<User>*/
