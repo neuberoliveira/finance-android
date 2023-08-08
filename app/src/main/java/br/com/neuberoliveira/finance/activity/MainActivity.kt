@@ -14,12 +14,10 @@ import br.com.neuberoliveira.finance.extractor.TransactionDestination
 import br.com.neuberoliveira.finance.extractor.TransactionType
 import br.com.neuberoliveira.finance.model.database.getDatabase
 import br.com.neuberoliveira.finance.model.entity.TransactionEntity
-import br.com.neuberoliveira.finance.model.prefs.Preferences
 import br.com.neuberoliveira.finance.services.SheetsClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MainActivity : Activity() {
   lateinit var transactions: List<TransactionEntity>
@@ -27,20 +25,20 @@ class MainActivity : Activity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
-    transactions = getDatabase(this).transactionDao().getAll()
-    
-    val prefs = Preferences(applicationContext)
+  
+    // val prefs = Preferences(applicationContext)
     val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
     val transactionAdapter = CustomAdapter(transactions)
     recyclerView.adapter = transactionAdapter
-    
+  
     if (!isNotificationAccessEnabled()) {
       openNotificationSettings()
     }
-    
-    if (!prefs.hasToken()) {
-      goToAuthScreen()
-    }
+  }
+  
+  override fun onResume() {
+    super.onResume()
+    fetchTransactionList()
   }
   
   private fun goToAuthScreen() {
@@ -68,9 +66,14 @@ class MainActivity : Activity() {
     GlobalScope.launch(Dispatchers.IO) {
       client.authorize()
       val data = client.getTestRange()
-      withContext(Dispatchers.Main) {
-        println(data)
-      }
+      println(data)
+    }
+  }
+  
+  private fun fetchTransactionList() {
+    val databaseDao = getDatabase(this).transactionDao()
+    GlobalScope.launch(Dispatchers.IO) {
+      transactions = databaseDao.getAll()
     }
   }
 }
