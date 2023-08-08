@@ -1,7 +1,7 @@
 package br.com.neuberoliveira.finance.extractor
 
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
 
 class C6Extractor(title: String?, text: String?) : Extractor(title, text) {
@@ -14,7 +14,10 @@ class C6Extractor(title: String?, text: String?) : Extractor(title, text) {
     type = extractType()
     amount = extractAmount()
     date = extractDate()
-    destination = extractDestination() // precisa ser o ultimo por que depende do type
+  
+    // precisam ser os ultimos por que dependem do type
+    store = extractStoreName()
+    destination = extractDestination()
   }
   
   private fun extractType(): TransactionType? {
@@ -59,7 +62,24 @@ class C6Extractor(title: String?, text: String?) : Extractor(title, text) {
         }
         return dest
       }
+  
       else -> TransactionDestination.OUT
     }
+  }
+  
+  private fun extractStoreName(): String? {
+    val regexp = Regex("(às\\s\\d{2}:\\d{2}\\s?)(em|no\\s)(.*)(bra)")
+    val result = regexp.find(getText())
+    var storeName: String? = null
+    
+    if (result != null) {
+      storeName = result.groups[3]?.value
+    }
+    
+    if (storeName != null) {
+      storeName = storeName.trim()
+    }
+    
+    return storeName
   }
 }

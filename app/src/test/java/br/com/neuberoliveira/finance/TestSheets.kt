@@ -31,6 +31,7 @@ class TestSheets {
       date,
       TransactionType.DEBIT,
       TransactionDestination.OUT,
+      "Nome estabelecimento",
       false,
       "bla bla bla title bla bla bla",
       "bla bla bla text bla bla bla",

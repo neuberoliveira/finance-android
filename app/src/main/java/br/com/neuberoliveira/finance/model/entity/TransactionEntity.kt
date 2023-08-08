@@ -13,6 +13,7 @@ data class TransactionEntity(
     @ColumnInfo(name = "date") var date: String?,
     @ColumnInfo(name = "type") var type: TransactionType?,
     @ColumnInfo(name = "destination") var destination: TransactionDestination?,
+    @ColumnInfo(name = "store") var store: String?,
     @ColumnInfo(name = "sync") var sync: Boolean?,
     @ColumnInfo(name = "notification_title") var notificationTitle: String?,
     @ColumnInfo(name = "notification_text") var notificationText: String?,

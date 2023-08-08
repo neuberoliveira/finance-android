@@ -98,10 +98,15 @@ class SheetsClient {
     
     val range = ValueRange()
     val rowPayload = listOf(
+      // Data
       transaction.date,
+      // Tipo
       translateType(transaction.type),
+      // Valor
       amountWithSign(transaction.amount, transaction.destination),
-      "",
+      // Estabelecimento
+      transaction.store,
+      // Categoria
       "",
     )
     

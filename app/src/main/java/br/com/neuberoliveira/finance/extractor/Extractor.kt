@@ -20,6 +20,7 @@ abstract class Extractor(title: String?, text: String?) {
   var type: TransactionType? = null
   var destination: TransactionDestination? = null
   var date: String? = null
+  var store: String? = null
   
   abstract fun execParse()
   abstract fun getName(): String

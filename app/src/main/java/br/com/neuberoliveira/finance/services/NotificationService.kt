@@ -59,11 +59,12 @@ class NotificationService : NotificationListenerService() {
       
       if (extractor.isValid() && persist) {
         entity = TransactionEntity(
-          null,
+          null, // sbn.id.toLong(),
           extractor.amount,
           extractor.date,
           extractor.type,
           extractor.destination,
+          extractor.store,
           false,
           extractor.getTitle(),
           extractor.getText(),

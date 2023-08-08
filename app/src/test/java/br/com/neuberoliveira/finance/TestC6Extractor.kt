@@ -2,7 +2,9 @@ package br.com.neuberoliveira.finance
 import br.com.neuberoliveira.finance.extractor.C6Extractor
 import br.com.neuberoliveira.finance.extractor.TransactionDestination
 import br.com.neuberoliveira.finance.extractor.TransactionType
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class TestC6Extractor {
@@ -66,13 +68,38 @@ class TestC6Extractor {
 
     @Test
     fun withdraw() {
-        val extactor = C6Extractor("Saque realizado", "Saque realizado no valor de R$ 123,45 em 01/01/2022 as 00:00 com o cartão final 1234 no caixa eletrônico NOME CAIXA")
+        val extactor = C6Extractor(
+            "Saque realizado",
+            "Saque realizado no valor de R$ 123,45 em 01/01/2022 as 00:00 com o cartão final 1234 no caixa eletrônico NOME CAIXA"
+        )
         extactor.parse()
-
+    
         assertTrue(extactor.isValid())
         assertEquals("123,45", extactor.amount)
         assertEquals("01/01/2022", extactor.date)
         assertEquals(TransactionType.TRANSFER, extactor.type)
         assertEquals(TransactionDestination.OUT, extactor.destination)
+    }
+    
+    @Test
+    fun extractStoreName() {
+        val extactor = C6Extractor(
+            "Compra no débito aprovada",
+            "Sua compra no cartão final 0000 no valor de R$ 32,00 em 14/10/2021 às 12:18 em NOME ESTABELECIMENTO   SAO PAULO BRA foi aprovada."
+        )
+        extactor.parse()
+        
+        assertTrue(extactor.isValid())
+        assertEquals("nome estabelecimento   sao paulo", extactor.store)
+    }
+    
+    @Test
+    fun extractStoreNameFail() {
+        val extactor =
+            C6Extractor("Transação PIX recebida!", "Você recebeu um Pix com valor R$ 1.234,56")
+        extactor.parse()
+        
+        assertTrue(extactor.isValid())
+        assertEquals(null, extactor.store)
     }
 }
