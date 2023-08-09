@@ -20,7 +20,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class MainActivity : Activity() {
-  lateinit var transactions: List<TransactionEntity>
+  var transactions: List<TransactionEntity> = listOf()
   
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -34,6 +34,8 @@ class MainActivity : Activity() {
     if (!isNotificationAccessEnabled()) {
       openNotificationSettings()
     }
+  
+    fetchTransactionList()
   }
   
   override fun onResume() {

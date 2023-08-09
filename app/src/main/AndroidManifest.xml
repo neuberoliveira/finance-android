@@ -4,6 +4,7 @@
     package="br.com.neuberoliveira.finance">
 
   <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
   <uses-permission
       android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
       tools:ignore="ProtectedPermissions" />
