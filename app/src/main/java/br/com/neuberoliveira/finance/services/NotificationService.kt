@@ -1,17 +1,12 @@
 package br.com.neuberoliveira.finance.services
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.os.Build
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import br.com.neuberoliveira.finance.R
 import br.com.neuberoliveira.finance.extractNotification
 import br.com.neuberoliveira.finance.model.database.getDatabase
 import br.com.neuberoliveira.finance.model.entity.TransactionEntity
 import br.com.neuberoliveira.finance.model.prefs.Preferences
+import br.com.neuberoliveira.finance.utils.NotificationCreator
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.Volley
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +18,7 @@ class NotificationService : NotificationListenerService() {
   private lateinit var queue: RequestQueue
   private lateinit var sheetClient: SheetsClient
   private val CHANNEL_ID: String = "finance_channel"
+  private val notification = NotificationCreator(this)
   
   override fun onCreate() {
     super.onCreate()
@@ -34,7 +30,7 @@ class NotificationService : NotificationListenerService() {
     sheetClient.authorize()
   
   
-    registerChannel()
+    notification.registerChannel()
   }
   
   override fun onListenerConnected() {
@@ -51,6 +47,12 @@ class NotificationService : NotificationListenerService() {
     super.onListenerDisconnected()
     println("NotificationService.onListenerDisconnected")
     // requestRebind()
+  
+    notification.trigger(
+      "Serviço desconectado",
+      "O listener de notificações foi desconectado",
+      null
+    )
   }
   
   override fun onNotificationPosted(sbn: StatusBarNotification?) {
@@ -106,46 +108,13 @@ class NotificationService : NotificationListenerService() {
   
     /* val title = "Enviado para a planilha"
     val message = "Registrada a transacão do tipo ${transaction.type} no valor de ${transaction.amount}(${transaction.destination}) em ${transaction.store} as ${transaction.date}"
-    showNotification(getRandomId(), title, message) */
+    notification.trigger(title, message, null) */
   }
   
   private fun saveToDatabase(transaction: TransactionEntity, e: Exception) {
     getDatabase(applicationContext).transactionDao().add(transaction)
     println("Sent to database")
-    
-    showNotification(getRandomId(), "Ops! não foi enviado para a planilha", e.message ?: "?????")
-  }
   
-  private fun showNotification(id: Int, title: String, content: String) {
-    val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-      .setContentTitle(title)
-      .setContentText(content)
-      .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-      .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-      .setStyle(NotificationCompat.BigTextStyle().bigText(content))
-      .setAutoCancel(true)
-      // .setColor(Color.GREEN)
-      .setSmallIcon(R.drawable.ic_notification)
-      .build()
-    
-    startForeground(id, notification)
-    println("showNotification()")
-  }
-  
-  private fun registerChannel() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      val name = "Finance Channel"
-      val descriptionText = "Finance channel description"
-      val importance = NotificationManager.IMPORTANCE_DEFAULT
-      val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-        description = descriptionText
-      }
-      // Register the channel with the system
-      NotificationManagerCompat.from(applicationContext).createNotificationChannel(channel)
-    }
-  }
-  
-  private fun getRandomId(): Int {
-    return (1..9999).random()
+    notification.trigger("Ops! não foi enviado para a planilha", e.message ?: "?????", null)
   }
 }
